@@ -89,14 +89,7 @@ uvicorn evaluator:app --reload
 
 **6. Test it**
 
-Open [(http://localhost:8000/ui)] 
-
-Or use curl:
-```bash
-curl -X POST "http://localhost:8000/evaluate" \
-  -H "Content-Type: application/json" \
-  -d '{"question": "What is Newton second law?", "answer": "F = ma", "domain": "Physics"}'
-```
+Open [http://localhost:8000/ui] 
 
 ## Supported Domains
 
