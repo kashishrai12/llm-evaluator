@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Evaluator</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1f1f1f;
+    --border: #2a2a2a;
+    --accent: #d4f000;
+    --accent-dim: rgba(212,240,0,0.12);
+    --text: #f0f0f0;
+    --muted: #666;
+    --muted2: #444;
+    --excellent: #d4f000;
+    --good: #4db8ff;
+    --fair: #ffb547;
+    --poor: #ff5c5c;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+  .logo {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+  }
+  .logo span { color: var(--muted); }
+  .status-dot {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--muted2);
+    transition: background 0.3s;
+  }
+  .dot.online { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+  /* ── TABS ── */
+  nav {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+  }
+  .tab {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 14px 20px;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    letter-spacing: 0.04em;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── LAYOUT ── */
+  main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── FORM ── */
+  .form-grid { display: grid; gap: 1.25rem; }
+  .field label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  textarea, select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    padding: 10px 12px;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  select { cursor: pointer; }
+  select option { background: var(--surface2); }
+
+  .btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: #0e0e0e;
+    border: none;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+  .btn:hover { opacity: 0.88; }
+  .btn:active { transform: scale(0.99); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn.secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  /* ── RESULT CARD ── */
+  .result-card {
+    margin-top: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    animation: fadeUp 0.3s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header {
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .overall-score {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 500;
+  }
+  .overall-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    letter-spacing: 0.06em;
+  }
+  .verdict-chip {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+  .verdict-Excellent { background: rgba(212,240,0,0.15); color: var(--excellent); }
+  .verdict-Good      { background: rgba(77,184,255,0.15); color: var(--good); }
+  .verdict-Fair      { background: rgba(255,181,71,0.15); color: var(--fair); }
+  .verdict-Poor      { background: rgba(255,92,92,0.15); color: var(--poor); }
+
+  .scores-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .score-cell {
+    padding: 1rem 1.25rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .score-cell:nth-child(even) { border-right: none; }
+  .score-cell:nth-last-child(-n+2) { border-bottom: none; }
+  .score-name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .score-row { display: flex; align-items: center; gap: 10px; }
+  .bar-track {
+    flex: 1;
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .score-val {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    min-width: 32px;
+    text-align: right;
+    color: var(--text);
+  }
+
+  .result-section { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+  .result-section:last-child { border-bottom: none; }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .section-text { font-size: 14px; line-height: 1.65; color: var(--text); }
+  .suggestion {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .suggestion:last-child { border-bottom: none; padding-bottom: 0; }
+  .suggestion-n {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 16px;
+    padding-top: 2px;
+  }
+
+  /* ── HISTORY ── */
+  .history-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+  .history-title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 11px;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .btn-sm:hover { color: var(--text); border-color: var(--muted2); }
+  .btn-sm.danger:hover { color: var(--poor); border-color: var(--poor); }
+
+  .history-list { display: grid; gap: 10px; }
+  .history-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .history-item:hover { border-color: var(--muted2); }
+  .history-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .history-q {
+    font-size: 14px;
+    line-height: 1.4;
+    flex: 1;
+    margin-right: 1rem;
+    color: var(--text);
+  }
+  .history-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    text-align: right;
+  }
+  .history-scores {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .mini-score {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .mini-score span { color: var(--text); }
+
+  /* ── STATS ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .stat-box {
+    background: var(--surface);
+    padding: 1.25rem;
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .stat-val {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .panel-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .panel-row:last-child { border-bottom: none; }
+  .panel-row-val {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  /* ── EMPTY / LOADING ── */
+  .empty {
+    text-align: center;
+    padding: 3rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .loading-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+  .loading-bar.active { display: block; }
+  .loading-bar::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 40%;
+    background: var(--accent);
+    animation: slide 1s ease-in-out infinite;
+  }
+  @keyframes slide {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(350%); }
+  }
+
+  .error-msg {
+    padding: 10px 14px;
+    background: rgba(255,92,92,0.1);
+    border: 1px solid rgba(255,92,92,0.3);
+    border-radius: 4px;
+    color: var(--poor);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin-top: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">llm<span>/</span>eval</div>
+  <div class="status-dot">
+    <div class="dot" id="statusDot"></div>
+    <span id="statusText">checking...</span>
+  </div>
+</header>
+
+<nav>
+  <button class="tab active" onclick="switchTab('evaluate', this)">evaluate</button>
+  <button class="tab" onclick="switchTab('history', this)">history</button>
+  <button class="tab" onclick="switchTab('stats', this)">stats</button>
+</nav>
+
+<main>
+
+  <!-- ── EVALUATE PAGE ── -->
+  <div class="page active" id="page-evaluate">
+    <div class="form-grid">
+      <div class="field">
+        <label>Question</label>
+        <textarea id="question" rows="3" placeholder="What question was asked to the AI?"></textarea>
+      </div>
+      <div class="field">
+        <label>AI Answer</label>
+        <textarea id="answer" rows="6" placeholder="Paste the AI-generated answer to evaluate..."></textarea>
+      </div>
+      <div class="field">
+        <label>Domain</label>
+        <select id="domain">
+          <option>Mathematics</option>
+          <option>Physics</option>
+          <option>Coding</option>
+          <option>Finance</option>
+          <option>Biology</option>
+          <option>Chemistry</option>
+          <option>General</option>
+        </select>
+      </div>
+      <button class="btn" id="evalBtn" onclick="runEval()">→ evaluate response</button>
+    </div>
+
+    <div class="loading-bar" id="loadingBar"></div>
+    <div id="evalError" style="display:none"></div>
+    <div id="resultCard" style="display:none"></div>
+  </div>
+
+  <!-- ── HISTORY PAGE ── -->
+  <div class="page" id="page-history">
+    <div class="history-toolbar">
+      <div class="history-title">past evaluations</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-sm" onclick="loadHistory()">↺ refresh</button>
+        <button class="btn-sm danger" onclick="clearHistory()">✕ clear all</button>
+      </div>
+    </div>
+    <div id="historyList"><div class="empty">no evaluations yet</div></div>
+  </div>
+
+  <!-- ── STATS PAGE ── -->
+  <div class="page" id="page-stats">
+    <div id="statsContent"><div class="empty">no data yet</div></div>
+  </div>
+
+</main>
+
+<script>
+const API = 'http://localhost:8000';
+
+// ── STATUS CHECK ──────────────────────────────────────────────
+async function checkStatus() {
+  try {
+    const r = await fetch(`${API}/`);
+    if (r.ok) {
+      document.getElementById('statusDot').classList.add('online');
+      document.getElementById('statusText').textContent = 'api online';
+    }
+  } catch {
+    document.getElementById('statusText').textContent = 'api offline';
+  }
+}
+checkStatus();
+
+// ── TABS ──────────────────────────────────────────────────────
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('page-' + name).classList.add('active');
+  if (name === 'history') loadHistory();
+  if (name === 'stats')   loadStats();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function scoreColor(s) {
+  if (s >= 8) return '#d4f000';
+  if (s >= 6) return '#4db8ff';
+  if (s >= 4) return '#ffb547';
+  return '#ff5c5c';
+}
+
+// ── EVALUATE ─────────────────────────────────────────────────
+async function runEval() {
+  const question = document.getElementById('question').value.trim();
+  const answer   = document.getElementById('answer').value.trim();
+  const domain   = document.getElementById('domain').value;
+
+  if (!question || !answer) {
+    showError('evalError', 'Please fill in both the question and the answer.');
+    return;
+  }
+
+  document.getElementById('evalError').style.display = 'none';
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('loadingBar').classList.add('active');
+  document.getElementById('evalBtn').disabled = true;
+
+  try {
+    const res = await fetch(`${API}/evaluate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, answer, domain })
+    });
+    if (!res.ok) throw new Error(`Server error ${res.status}`);
+    const d = await res.json();
+    renderResult(d);
+  } catch (err) {
+    showError('evalError', err.message);
+  }
+
+  document.getElementById('loadingBar').classList.remove('active');
+  document.getElementById('evalBtn').disabled = false;
+}
+
+function renderResult(d) {
+  const criteria = [
+    { key: 'accuracy',     label: 'Accuracy' },
+    { key: 'clarity',      label: 'Clarity' },
+    { key: 'completeness', label: 'Completeness' },
+    { key: 'reasoning',    label: 'Reasoning' }
+  ];
+
+  const barsHTML = criteria.map(c => `
+    <div class="score-cell">
+      <div class="score-name">${c.label}</div>
+      <div class="score-row">
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${d[c.key]*10}%;background:${scoreColor(d[c.key])}"></div>
+        </div>
+        <span class="score-val">${parseFloat(d[c.key]).toFixed(1)}</span>
+      </div>
+    </div>`).join('');
+
+  const suggestionsHTML = (d.suggestions || []).map((s, i) => `
+    <div class="suggestion">
+      <span class="suggestion-n">${i+1}.</span>
+      <span>${s}</span>
+    </div>`).join('');
+
+  document.getElementById('resultCard').innerHTML = `
+    <div class="result-card">
+      <div class="result-header">
+        <div>
+          <div class="overall-score" style="color:${scoreColor(d.overall)}">${parseFloat(d.overall).toFixed(1)}<span style="font-size:14px;color:var(--muted);font-weight:300"> / 10</span></div>
+          <div class="overall-label">overall score</div>
+        </div>
+        <span class="verdict-chip verdict-${d.verdict}">${d.verdict}</span>
+      </div>
+      <div class="scores-grid">${barsHTML}</div>
+      <div class="result-section">
+        <div class="section-label">Assessment</div>
+        <div class="section-text">${d.summary}</div>
+      </div>
+      <div class="result-section">
+        <div class="section-label">Suggestions</div>
+        ${suggestionsHTML}
+      </div>
+    </div>`;
+  document.getElementById('resultCard').style.display = 'block';
+}
+
+// ── HISTORY ───────────────────────────────────────────────────
+async function loadHistory() {
+  try {
+    const res = await fetch(`${API}/history`);
+    const data = await res.json();
+    const list = document.getElementById('historyList');
+
+    if (!data.evaluations.length) {
+      list.innerHTML = '<div class="empty">no evaluations yet</div>';
+      return;
+    }
+
+    list.innerHTML = '<div class="history-list">' +
+      data.evaluations.map(e => `
+        <div class="history-item">
+          <div class="history-item-top">
+            <div class="history-q">${e.question}</div>
+            <div class="history-meta">
+              <span class="verdict-chip verdict-${e.verdict}" style="font-size:10px;padding:3px 8px">${e.verdict}</span>
+              <div style="margin-top:5px">${e.timestamp}</div>
+              <div style="color:var(--muted)">${e.domain}</div>
+            </div>
+          </div>
+          <div class="history-scores">
+            <span class="mini-score">accuracy <span>${e.accuracy}</span></span>
+            <span class="mini-score">clarity <span>${e.clarity}</span></span>
+            <span class="mini-score">completeness <span>${e.completeness}</span></span>
+            <span class="mini-score">reasoning <span>${e.reasoning}</span></span>
+            <span class="mini-score">overall <span style="color:${scoreColor(e.overall)}">${e.overall}</span></span>
+          </div>
+        </div>`).join('') + '</div>';
+  } catch {
+    document.getElementById('historyList').innerHTML = '<div class="empty">could not load — is the server running?</div>';
+  }
+}
+
+async function clearHistory() {
+  if (!confirm('Clear all evaluation history?')) return;
+  await fetch(`${API}/history/clear`, { method: 'DELETE' });
+  loadHistory();
+}
+
+// ── STATS ─────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const res = await fetch(`${API}/history/stats`);
+    const d = await res.json();
+
+    if (!d.total_evaluations) {
+      document.getElementById('statsContent').innerHTML = '<div class="empty">run some evaluations first</div>';
+      return;
+    }
+
+    const avg = d.average_scores;
+    const verdictRows = Object.entries(d.verdicts_breakdown || {})
+      .sort((a,b) => b[1]-a[1])
+      .map(([v,c]) => `<div class="panel-row"><span>${v}</span><span class="panel-row-val">${c}</span></div>`).join('');
+
+    const domainRows = Object.entries(d.domains_breakdown || {})
+      .map(([dom,c]) => `<div class="panel-row"><span>${dom}</span><span class="panel-row-val">${c}</span></div>`).join('');
+
+    const avgRows = [
+      ['Accuracy',     avg.accuracy],
+      ['Clarity',      avg.clarity],
+      ['Completeness', avg.completeness],
+      ['Reasoning',    avg.reasoning],
+    ].map(([label, val]) => `
+      <div class="panel-row">
+        <span>${label}</span>
+        <div style="display:flex;align-items:center;gap:10px;flex:1;margin-left:1rem">
+          <div class="bar-track" style="flex:1">
+            <div class="bar-fill" style="width:${val*10}%;background:${scoreColor(val)}"></div>
+          </div>
+          <span class="panel-row-val">${val}</span>
+        </div>
+      </div>`).join('');
+
+    document.getElementById('statsContent').innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-label">total runs</div>
+          <div class="stat-val">${d.total_evaluations}</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">avg overall</div>
+          <div class="stat-val">${avg.overall}</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">highest</div>
+          <div class="stat-val">${d.highest_score}</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">lowest</div>
+          <div class="stat-val" style="color:var(--poor)">${d.lowest_score}</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-header">avg by criterion</div>
+          ${avgRows}
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:1rem">
+            <div class="panel-header">by verdict</div>
+            ${verdictRows || '<div class="empty" style="padding:1rem">no data</div>'}
+          </div>
+          <div class="panel">
+            <div class="panel-header">by domain</div>
+            ${domainRows || '<div class="empty" style="padding:1rem">no data</div>'}
+          </div>
+        </div>
+      </div>`;
+  } catch {
+    document.getElementById('statsContent').innerHTML = '<div class="empty">could not load stats</div>';
+  }
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.innerHTML = `<div class="error-msg">${msg}</div>`;
+  el.style.display = 'block';
+}
+</script>
+</body>
+</html>
