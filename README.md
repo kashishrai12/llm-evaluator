@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 # LLM Response Evaluator API
 
 A REST API that evaluates the quality of AI-generated answers using an **LLM-as-judge** approach. Built with FastAPI and Groq. Given any question and an AI's answer, it returns a structured JSON rubric scoring the response across four criteria.
@@ -51,7 +48,7 @@ A REST API that evaluates the quality of AI-generated answers using an **LLM-as-
 
 ## Tech Stack
 
-- **Python** — core language
+- **Python** 
 - **FastAPI** — REST API framework
 - **Groq API** — LLM inference (llama-3.3-70b-versatile)
 - **Pydantic** — request validation
@@ -69,9 +66,9 @@ cd llm-evaluator
 pip install groq fastapi uvicorn
 ```
 
-**3. Get a free Groq API key**
+**3. Get Groq API key**
 
-Sign up at [console.groq.com](https://console.groq.com) — no credit card required.
+Sign up at [console.groq.com](https://console.groq.com)
 
 **4. Set your API key**
 
@@ -92,7 +89,7 @@ uvicorn evaluator:app --reload
 
 **6. Test it**
 
-Open [http://localhost:8000/docs](http://localhost:8000/docs) for the interactive API UI.
+Open [http://localhost:8000/docs](http://localhost:8000/docs) (for the interactive API UI).
 
 Or use curl:
 ```bash
@@ -122,4 +119,3 @@ The evaluator uses an **LLM-as-judge** pattern — a second LLM call is made wit
 ### `GET /`
 
 Health check — returns `{"status": "running"}`
->>>>>>> 6301cb8 (Add README)
