@@ -1,4 +1,4 @@
-# LLM Response Evaluator API
+# LLM Response Evaluator
 
 A REST API that evaluates the quality of AI-generated answers using an **LLM-as-judge** approach. Built with FastAPI and Groq. Given any question and an AI's answer, it returns a structured JSON rubric scoring the response across four criteria.
 
