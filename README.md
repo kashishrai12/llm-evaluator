@@ -89,7 +89,7 @@ uvicorn evaluator:app --reload
 
 **6. Test it**
 
-Open [http://localhost:8000/docs](http://localhost:8000/docs) (for the interactive API UI).
+Open [http://localhost:8000/docs](http://localhost:8000/ui) 
 
 Or use curl:
 ```bash
