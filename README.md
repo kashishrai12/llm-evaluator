@@ -112,3 +112,10 @@ The evaluator uses an **LLM-as-judge** pattern — a second LLM call is made wit
 ### `GET /`
 
 Health check — returns `{"status": "running"}`
+
+## Benchmark Results
+
+| Evaluator | Dataset | Samples | Agreement Rate |
+|---|---|---|---|
+| Evaluator 1 (General Quality) | Synthetic STEM | 40 | **80%** |
+| Evaluator 2 (Hallucination Detection) | TruthfulQA | 100 | *pending* |
