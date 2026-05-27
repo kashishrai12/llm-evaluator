@@ -14,6 +14,8 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 def serve_ui():
     return FileResponse("index.html")
 
+from dotenv import load_dotenv
+load_dotenv()
 client = Groq()
 
 # ─── DATABASE SETUP ───────────────────────────────────────────
@@ -89,11 +91,34 @@ def evaluate(req: EvalRequest):
             {
                 "role": "system",
                 "content": f"""You are an expert AI evaluator in {req.domain}.
+
+Your PRIMARY goal is factual correctness and truthfulness.
+
 Respond ONLY with valid JSON. No markdown, no backticks, nothing else.
-Score 0-10 on: accuracy, clarity, completeness, reasoning.
-Also give: overall (accuracy 40% + others 20% each), verdict (Excellent/Good/Fair/Poor), summary, suggestions (list of 2-3).
+
+Evaluate the answer on:
+- accuracy
+- clarity
+- completeness
+- reasoning
+
+SCORING RULES:
+1. Accuracy is the MOST IMPORTANT metric.
+2. Factually incorrect, hallucinated, misleading, or false answers must receive very low accuracy.
+3. Fluent writing should NOT compensate for incorrect facts.
+4. Concise truthful answers are better than detailed false answers.
+5. Major factual errors should significantly reduce overall score.
+
+Return ONLY these fields:
+- accuracy
+- clarity
+- completeness
+- reasoning
+- summary
+- suggestions
+
 Exact shape:
-{{"accuracy":7.5,"clarity":8.0,"completeness":6.0,"reasoning":7.0,"overall":7.2,"verdict":"Good","summary":"...","suggestions":["...","..."]}}"""
+{{"accuracy":7.5,"clarity":8.0,"completeness":6.0,"reasoning":7.0,"summary":"...","suggestions":["...","..."]}}"""
             },
             {
                 "role": "user",
@@ -110,6 +135,39 @@ Exact shape:
 
     clean = raw.replace("```json", "").replace("```", "").strip()
     result = json.loads(clean)
+
+    # ─── CALCULATE OVERALL SCORE IN PYTHON ─────────────────────
+
+    accuracy = float(result.get("accuracy", 0))
+    clarity = float(result.get("clarity", 0))
+    completeness = float(result.get("completeness", 0))
+    reasoning = float(result.get("reasoning", 0))
+
+    overall = round(
+        accuracy * 0.55 +
+        clarity * 0.15 +
+        completeness * 0.15 +
+        reasoning * 0.15,
+        1
+    )
+
+    # hard constraint for factual correctness
+    if accuracy < 5:
+        overall = min(overall, 4.9)
+
+    # ─── VERDICT LOGIC ─────────────────────────────────────────
+
+    if overall >= 9.0:
+        verdict = "Excellent"
+    elif overall >= 7.0:
+        verdict = "Good"
+    elif overall >= 5.0:
+        verdict = "Fair"
+    else:
+        verdict = "Poor"
+
+    result["overall"] = overall
+    result["verdict"] = verdict
 
     # save to database
     save_to_db(req.domain, req.question, req.answer, result)

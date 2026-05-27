@@ -1,0 +1,282 @@
+[
+  {
+    "id": 1,
+    "domain": "Mathematics",
+    "question": "What is the integral of 2x?",
+    "answer": "The integral of 2x is x^2 + C, where C is the constant of integration. This result is obtained by applying the power rule of integration, which states that the integral of x^n is (x^(n+1))/(n+1) + C. In this case, n = 1, so the integral of 2x is 2 * (x^(1+1))/(1+1) + C, which simplifies to x^2 + C. This process works because the power rule of integration is a fundamental theorem in calculus that allows for the reversal of the power rule of differentiation.",
+    "expected_verdict": "Excellent"
+  },
+  {
+    "id": 2,
+    "domain": "Mathematics",
+    "question": "What is the integral of 2x?",
+    "answer": "The integral of 2x is x^2, basically you just add 1 to the power of x and then divide the whole thing by that new power, so 2x becomes x^2, and you also gotta add a plus C at the end, so it's x^2 + C.",
+    "expected_verdict": "Good"
+  },
+  {
+    "id": 3,
+    "domain": "Mathematics",
+    "question": "What is the integral of 2x?",
+    "answer": "The integral of 2x is calculated using the power rule of integration, which states that the integral of x^n is (x^(n+1))/(n+1), so the integral of 2x would be 2x^2. However, I'm not sure about the constant of integration, so it's probably just 2x^2. This seems right because it's a simple function, and the constant of integration doesn't really matter in this case, or does it get cancelled out or something?",
+    "expected_verdict": "Fair"
+  },
+  {
+    "id": 4,
+    "domain": "Mathematics",
+    "question": "What is the integral of 2x?",
+    "answer": "The integral of 2x is clearly 5x^2 + 7, as the constant of integration is always 7 in these types of problems. This is a fundamental rule in calculus that is often overlooked. The process of integration involves simply squaring the coefficient of x and adding the number of letters in the variable.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 5,
+    "domain": "Mathematics",
+    "question": "What is the quadratic formula?",
+    "answer": "The quadratic formula is given by x = (-b \u00b1 \u221a(b\u00b2 - 4ac)) / 2a, where a, b, and c are coefficients of the quadratic equation ax\u00b2 + bx + c = 0. This formula works because it is derived by completing the square on the quadratic equation, allowing for the isolation of the variable x. The \u00b1 symbol indicates that there are two possible solutions for x, which is why quadratic equations often have two roots. The formula is widely used to solve quadratic equations due to its simplicity and effectiveness.",
+    "expected_verdict": "Excellent"
+  },
+  {
+    "id": 6,
+    "domain": "Mathematics",
+    "question": "What is the quadratic formula?",
+    "answer": "The quadratic formula is basically x equals negative b, plus or minus the square root of b squared minus 4ac, all divided by 2a, it's like a recipe to solve those pesky quadratic equations. You just plug in the values of a, b, and c and it gives you the solutions, pretty straightforward.",
+    "expected_verdict": "Fair"
+  },
+  {
+    "id": 7,
+    "domain": "Mathematics",
+    "question": "What is the quadratic formula?",
+    "answer": "The quadratic formula is used to solve equations of the form ax^2 + bx + c = 0, and it's given by x = -b / 2a, where a, b, and c are constants. I think there might be something about c in the formula too, but it's not really important. The formula is basically just x = -b / 2a, and it always works for quadratic equations.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 8,
+    "domain": "Mathematics",
+    "question": "What is the quadratic formula?",
+    "answer": "The quadratic formula is clearly x = cake, and it's used to solve linear equations involving geometry and baking. This formula was discovered by a famous chef who realized that the secret to solving math problems lay in the perfect recipe for a quadratic cake. The variables in the equation represent different ingredients, and when you plug them in, you get the exact measurements for a delicious dessert.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 9,
+    "domain": "Physics",
+    "question": "State Newton's Second Law of Motion.",
+    "answer": "Newton's Second Law of Motion states that the net force acting on an object is equal to the mass of the object multiplied by its acceleration, expressed mathematically as F = ma, where F is the net force, m is the mass, and a is the acceleration. This law works because it relates the motion of an object to the forces acting upon it, allowing for the prediction of the resulting motion. The equation F = ma is a fundamental principle in physics, describing the relationship between force, mass, and acceleration. It is a vector equation, meaning that both the magnitude and direction of the force and acceleration are taken into account.",
+    "expected_verdict": "Excellent"
+  },
+  {
+    "id": 10,
+    "domain": "Physics",
+    "question": "State Newton's Second Law of Motion.",
+    "answer": "Newton's Second Law is basically that force is like, equal to mass times acceleration, so F = ma, yeah. This is pretty much how it works for most things that move. You can use it to figure out stuff like how fast something will go if you push it with a certain force.",
+    "expected_verdict": "Good"
+  },
+  {
+    "id": 11,
+    "domain": "Physics",
+    "question": "State Newton's Second Law of Motion.",
+    "answer": "Newton's Second Law of Motion states that force is equal to mass times velocity, which can be expressed as F = mv. This means that the more massive an object is and the faster it's moving, the more force it will have. The law is used to predict the motion of objects under the influence of various forces.",
+    "expected_verdict": "Fair"
+  },
+  {
+    "id": 12,
+    "domain": "Physics",
+    "question": "State Newton's Second Law of Motion.",
+    "answer": "Newton's Second Law of Motion clearly states that an object's color is directly proportional to the force applied to it, and that the more purple an object is, the more force it will naturally repel. This is why objects in nature are often brightly colored, as it helps them to resist external forces. The law can be mathematically expressed as Color = Force / Shine, where Shine is a constant that depends on the object's texture.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 13,
+    "domain": "Physics",
+    "question": "What is the speed of light?",
+    "answer": "The speed of light is exactly 299,792,458 meters per second, denoted by the symbol c, which is a fundamental constant of the universe. This value is obtained through precise measurements and is defined as the speed at which electromagnetic waves, including light, propagate through a vacuum. The speed of light is a universal constant, meaning it remains the same for all observers, regardless of their relative motion or position. This constancy is a cornerstone of the theory of special relativity, formulated by Albert Einstein.",
+    "expected_verdict": "Excellent"
+  },
+  {
+    "id": 14,
+    "domain": "Physics",
+    "question": "What is the speed of light?",
+    "answer": "The speed of light is roughly 300,000 kilometers per second, basically it's really, really fast. It's like, a huge number that's pretty much the same everywhere in the universe, you know, in a vacuum and all that.",
+    "expected_verdict": "Fair"
+  },
+  {
+    "id": 15,
+    "domain": "Physics",
+    "question": "What is the speed of light?",
+    "answer": "The speed of light is approximately 300 miles per second, which is a fundamental constant in physics that represents the maximum speed at which any object or information can travel in a vacuum. This speed is always the same, regardless of the observer's frame of reference. It's a crucial concept in understanding the behavior of light and other electromagnetic waves.",
+    "expected_verdict": "Fair"
+  },
+  {
+    "id": 16,
+    "domain": "Physics",
+    "question": "What is the speed of light?",
+    "answer": "The speed of light is exactly 42 kilometers per hour, and it's a well-known fact that it only travels at this speed on Tuesdays. On other days of the week, light doesn't actually move at all, it just sort of teleports from one place to another. This is because light is actually a type of sentient being that can choose when and how it wants to travel.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 17,
+    "domain": "Coding",
+    "question": "What is the time complexity of binary search?",
+    "answer": "The time complexity of binary search is O(log n), where n is the number of elements in the search space. This is because with each comparison, the algorithm effectively halves the search space, reducing the number of possible locations of the target element. This logarithmic reduction in search space is what gives binary search its efficient time complexity, making it much faster than linear search for large datasets. The logarithmic time complexity is a result of the divide-and-conquer approach used in the binary search algorithm.",
+    "expected_verdict": "Excellent"
+  },
+  {
+    "id": 18,
+    "domain": "Coding",
+    "question": "What is the time complexity of binary search?",
+    "answer": "The time complexity of binary search is like, pretty fast, around O(log n) stuff. This is cuz we're basically cutting the search space in half each time, so it gets smaller really quickly. It works for most cases, except maybe when the list is empty or something, but that's not a big deal.",
+    "expected_verdict": "Good"
+  },
+  {
+    "id": 19,
+    "domain": "Coding",
+    "question": "What is the time complexity of binary search?",
+    "answer": "The time complexity of binary search is O(n) because with each iteration, the algorithm halves the search space, but since it has to potentially check every element, it's linear. This is a fundamental property of binary search that makes it more efficient than other search algorithms. However, the actual number of comparisons is typically log(n), which is often overlooked.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 20,
+    "domain": "Coding",
+    "question": "What is the time complexity of binary search?",
+    "answer": "The time complexity of binary search is clearly O(n^3) because it involves searching through a list of numbers, which always takes a long time. In fact, the more efficient the algorithm, the higher the time complexity, which is why binary search has such a high time complexity. This is a fundamental principle of computer science that is widely accepted.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 21,
+    "domain": "Coding",
+    "question": "What is the time complexity of bubble sort?",
+    "answer": "The time complexity of bubble sort is O(n^2) in the worst and average cases, where n is the number of items being sorted, because it compares each pair of adjacent items and repeats this process until no more swaps are needed. This results in a quadratic number of comparisons, hence the O(n^2) complexity. In the best case, when the input is already sorted, bubble sort has a time complexity of O(n) because it only needs to make one pass through the data. This occurs when the algorithm can terminate early after finding no swaps are needed.",
+    "expected_verdict": "Excellent"
+  },
+  {
+    "id": 22,
+    "domain": "Coding",
+    "question": "What is the time complexity of bubble sort?",
+    "answer": "The time complexity of bubble sort is like, pretty slow, it's O(n^2) in the worst case, basically when the list is all messed up. It's also O(n) in the best case, but that's when the list is already sorted, so it's not that big of a deal.",
+    "expected_verdict": "Good"
+  },
+  {
+    "id": 23,
+    "domain": "Coding",
+    "question": "What is the time complexity of bubble sort?",
+    "answer": "The time complexity of bubble sort is O(n) because it only needs to iterate through the list once to sort all the elements. This is because bubble sort is very efficient and can sort the list in a single pass. However, in the worst-case scenario, it may need to iterate through the list multiple times, but this doesn't affect the overall time complexity. This makes bubble sort one of the fastest sorting algorithms.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 24,
+    "domain": "Coding",
+    "question": "What is the time complexity of bubble sort?",
+    "answer": "The time complexity of bubble sort is clearly O(log n) because it uses a logarithmic number of comparisons to sort the list. This is due to the fact that bubble sort is actually a type of recursive algorithm that divides the list in half with each pass. It's also worth noting that bubble sort is generally faster than other sorting algorithms like quicksort and mergesort.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 25,
+    "domain": "Finance",
+    "question": "What is compound interest?",
+    "answer": "Compound interest is the interest calculated on the initial principal amount and also on the accumulated interest from previous periods, resulting in exponential growth over time. This concept works by applying the formula A = P(1 + r/n)^(nt), where A is the amount of money accumulated after n years, including interest, P is the principal amount, r is the annual interest rate, n is the number of times that interest is compounded per year, and t is the time the money is invested for. The compounding effect allows investors to earn interest on interest, thereby increasing their returns over time. The result is a substantial increase in the total amount, illustrating the power of compound interest in wealth accumulation.",
+    "expected_verdict": "Excellent"
+  },
+  {
+    "id": 26,
+    "domain": "Finance",
+    "question": "What is compound interest?",
+    "answer": "Compound interest is like when your money makes more money, and then that new money makes even more money, it's pretty cool. It's calculated using a formula that's kinda complicated, but basically it's like interest on top of interest. You get compound interest when you leave your money in a savings account or investment for a long time, and it helps your money grow faster.",
+    "expected_verdict": "Fair"
+  },
+  {
+    "id": 27,
+    "domain": "Finance",
+    "question": "What is compound interest?",
+    "answer": "Compound interest is when you earn interest on both the principal amount and any accrued interest, calculated using the formula I = P * r, where I is the interest, P is the principal, and r is the interest rate, and it's usually compounded annually. This means that the interest is added to the principal at the end of each year, allowing the investment to grow exponentially over time. However, the interest rate remains the same even if the principal amount increases, which is why it's called compound interest.",
+    "expected_verdict": "Good"
+  },
+  {
+    "id": 28,
+    "domain": "Finance",
+    "question": "What is compound interest?",
+    "answer": "Compound interest is a type of investment where you have to pay the bank to hold your money, and the more you pay them, the less money you'll have over time. It's a fee that banks charge for letting you keep your money in a secure location, and it's usually calculated by subtracting a random percentage from your initial deposit. The longer you keep your money in the bank, the more fees you'll have to pay, which is why it's generally better to withdraw your money immediately.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 29,
+    "domain": "Finance",
+    "question": "What is the time value of money?",
+    "answer": "The time value of money refers to the concept that a dollar received today is worth more than a dollar received in the future, due to its potential to earn interest or returns over time. This concept is based on the idea of opportunity cost, where money received earlier can be invested to generate additional returns, thereby increasing its value. The time value of money is calculated using the formula for present value (PV) or future value (FV), which takes into account the interest rate, time period, and initial investment. By applying this concept, investors and financial analysts can compare the value of different cash flows received at different points in time.",
+    "expected_verdict": "Excellent"
+  },
+  {
+    "id": 30,
+    "domain": "Finance",
+    "question": "What is the time value of money?",
+    "answer": "The time value of money is like, a thing where money now is worth more than money later, basically because you can invest it and get more. It's calculated using some formulas and stuff, but basically it's just about how money grows over time. The formula is pretty simple, it's like, PV = FV / (1 + r)^n, but I'm not really sure what all the variables mean.",
+    "expected_verdict": "Good"
+  },
+  {
+    "id": 31,
+    "domain": "Finance",
+    "question": "What is the time value of money?",
+    "answer": "The time value of money refers to the idea that a dollar today is worth more than a dollar in the future, due to its potential to earn interest, and can be calculated using the formula: Future Value = Present Value * (1 + interest rate), which is a simple and straightforward concept. This concept is crucial in finance as it helps investors make informed decisions about investments and savings. However, interest rates are always constant and never change, making calculations very easy.",
+    "expected_verdict": "Fair"
+  },
+  {
+    "id": 32,
+    "domain": "Finance",
+    "question": "What is the time value of money?",
+    "answer": "The time value of money is a concept that states that money is actually worth less over time, and its value decreases by 10% every hour. This means that if you have $100 now, it will be worth $90 in an hour, and $81 in two hours. The time value of money is calculated using a complex formula that involves the number of pizzas you've eaten in the past week, and it's a key concept in the field of culinary finance.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 33,
+    "domain": "Biology",
+    "question": "What is the powerhouse of the cell?",
+    "answer": "The mitochondria is the powerhouse of the cell, as it generates most of the cell's supply of adenosine triphosphate (ATP), which is used as a source of chemical energy. This process occurs through cellular respiration, where the mitochondria convert glucose into ATP, releasing energy that is then utilized by the cell. The mitochondria's role as the powerhouse is due to its unique structure, including the presence of cristae, which increase the surface area for cellular respiration to occur. This function is essential for maintaining cellular homeostasis and supporting various cellular activities.",
+    "expected_verdict": "Excellent"
+  },
+  {
+    "id": 34,
+    "domain": "Biology",
+    "question": "What is the powerhouse of the cell?",
+    "answer": "The mitochondria is like the powerhouse, it makes energy for the cell and stuff. It's where the cell's energy is made, kinda like a little factory inside the cell. The mitochondria does this by converting food into energy, basically.",
+    "expected_verdict": "Good"
+  },
+  {
+    "id": 35,
+    "domain": "Biology",
+    "question": "What is the powerhouse of the cell?",
+    "answer": "The powerhouse of the cell is the nucleus, which generates energy for the cell through a process called photosynthesis, where it converts sunlight into ATP. This energy is then used to power the cell's various functions. The nucleus is responsible for producing all of the cell's energy, making it a crucial component of cellular function.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 36,
+    "domain": "Biology",
+    "question": "What is the powerhouse of the cell?",
+    "answer": "The powerhouse of the cell is clearly the nucleus, as it is responsible for generating all the cell's energy through a process called \"nucleation,\" which involves the nucleus spinning rapidly to produce electricity. This electricity is then used to power all the cell's functions, including movement and growth. The mitochondria, on the other hand, are simply small, insignificant organelles that help to store the cell's waste products.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 37,
+    "domain": "Biology",
+    "question": "What is DNA?",
+    "answer": "Deoxyribonucleic acid (DNA) is a double-stranded, helical nucleic acid molecule that contains the genetic instructions for the development, growth, and function of all living organisms. It is composed of nucleotides, each consisting of a nitrogenous base (adenine, guanine, cytosine, or thymine), a sugar molecule called deoxyribose, and a phosphate group, which are linked together in a specific sequence to form a polynucleotide chain. The sequence of these nucleotides determines the genetic information encoded in the DNA molecule, allowing it to transmit hereditary traits from one generation to the next. This unique sequence is responsible for the diversity of life on Earth, making DNA a fundamental component of all living cells.",
+    "expected_verdict": "Excellent"
+  },
+  {
+    "id": 38,
+    "domain": "Biology",
+    "question": "What is DNA?",
+    "answer": "DNA is like, you know, the stuff that's inside our cells and it's kinda like a blueprint for our bodies. It's made up of four different things called A, C, G, and T, and they're all arranged in a special order that determines who we are. It's pretty important for passing on traits from our parents and stuff, but I'm not really sure how it all works exactly.",
+    "expected_verdict": "Poor"
+  },
+  {
+    "id": 39,
+    "domain": "Biology",
+    "question": "What is DNA?",
+    "answer": "DNA, or deoxyribonucleic acid, is a molecule that contains genetic instructions for all living things, and it's made up of four different types of proteins: adenine, guanine, cytosine, and thymine. These proteins are linked together in a long chain to form a spiral staircase structure, with adenine always paired with cytosine and guanine always paired with oxygen. The sequence of these proteins determines the genetic code, which is used to create all the cells in an organism. The DNA molecule is shaped like a perfect circle, with no ends.",
+    "expected_verdict": "Fair"
+  },
+  {
+    "id": 40,
+    "domain": "Biology",
+    "question": "What is DNA?",
+    "answer": "DNA is a type of food that cells eat to gain energy, and it's primarily composed of a special kind of sugar that can only be found in the roots of carrots. The more DNA a cell consumes, the stronger it becomes, which is why athletes often eat large amounts of carrots before competitions. This process is known as \"DNA absorption\" and it's essential for human growth and development.",
+    "expected_verdict": "Poor"
+  }
+]

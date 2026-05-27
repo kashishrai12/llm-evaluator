@@ -461,6 +461,13 @@
   <div class="page active" id="page-evaluate">
     <div class="form-grid">
       <div class="field">
+        <label>Evaluator</label>
+        <select id="evaluator">
+          <option value="evaluator1">Evaluator 1 — General Quality</option>
+          <option value="evaluator2">Evaluator 2 — Hallucination Detection</option>
+        </select>
+      </div>
+      <div class="field">
         <label>Question</label>
         <textarea id="question" rows="3" placeholder="What question was asked to the AI?"></textarea>
       </div>
@@ -508,7 +515,10 @@
 </main>
 
 <script>
-const API = 'http://localhost:8000';
+const API =
+  window.location.port === "8001"
+    ? "http://localhost:8001"
+    : "http://localhost:8000";
 
 // ── STATUS CHECK ──────────────────────────────────────────────
 async function checkStatus() {
@@ -528,17 +538,53 @@ checkStatus();
 function switchTab(name, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
   el.classList.add('active');
   document.getElementById('page-' + name).classList.add('active');
+
   if (name === 'history') loadHistory();
-  if (name === 'stats')   loadStats();
+  if (name === 'stats') loadStats();
 }
 
 // ── HELPERS ───────────────────────────────────────────────────
-function scoreColor(s) {
-  if (s >= 8) return '#d4f000';
-  if (s >= 6) return '#4db8ff';
-  if (s >= 4) return '#ffb547';
+function normalizeScore(value) {
+  // already numeric
+  if (typeof value === 'number') return value;
+
+  // string number like "8.5"
+  if (!isNaN(parseFloat(value))) {
+    return parseFloat(value);
+  }
+
+  // evaluator2 categorical outputs
+  const map = {
+    "Excellent": 9,
+    "Good": 7,
+    "Fair": 5,
+    "Poor": 2
+  };
+
+  return map[value] || 0;
+}
+
+function displayScore(value) {
+  if (typeof value === 'number') {
+    return value.toFixed(1);
+  }
+
+  if (!isNaN(parseFloat(value))) {
+    return parseFloat(value).toFixed(1);
+  }
+
+  return value || "0.0";
+}
+
+function scoreColor(score) {
+  score = normalizeScore(score);
+
+  if (score >= 8) return '#d4f000';
+  if (score >= 6) return '#4db8ff';
+  if (score >= 4) return '#ffb547';
   return '#ff5c5c';
 }
 
@@ -546,7 +592,8 @@ function scoreColor(s) {
 async function runEval() {
   const question = document.getElementById('question').value.trim();
   const answer   = document.getElementById('answer').value.trim();
-  const domain   = document.getElementById('domain').value;
+  const domain    = document.getElementById('domain').value;
+  const evaluator = document.getElementById('evaluator').value;  
 
   if (!question || !answer) {
     showError('evalError', 'Please fill in both the question and the answer.');
@@ -562,11 +609,19 @@ async function runEval() {
     const res = await fetch(`${API}/evaluate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, answer, domain })
+      body: JSON.stringify({ question, answer, domain, evaluator})
     });
-    if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+    if (!res.ok) {
+      throw new Error(`Server error ${res.status}`);
+    }
+
     const d = await res.json();
+
+    console.log("API RESPONSE:", d);
+
     renderResult(d);
+
   } catch (err) {
     showError('evalError', err.message);
   }
@@ -575,50 +630,148 @@ async function runEval() {
   document.getElementById('evalBtn').disabled = false;
 }
 
+// ── RESULT RENDER ─────────────────────────────────────────────
 function renderResult(d) {
+
+  // compatibility layer for evaluator1 + evaluator2
+  const normalized = {
+    accuracy:
+      d.accuracy ??
+      d.factual_accuracy ??
+      d.scores?.accuracy ??
+      d.scores?.factual_accuracy ??
+      d.evaluation?.accuracy ??
+      0,
+
+    clarity:
+      d.clarity ??
+      d.clarity_score ??
+      d.scores?.clarity ??
+      d.scores?.clarity_score ??
+      d.evaluation?.clarity ??
+      0,
+
+    completeness:
+      d.completeness ??
+      d.completeness_score ??
+      d.scores?.completeness ??
+      d.scores?.completeness_score ??
+      d.evaluation?.completeness ??
+      0,
+
+    reasoning:
+      d.reasoning ??
+      d.scores?.reasoning ??
+      d.evaluation?.reasoning ??
+      0,
+
+    overall:
+      d.overall ??
+      d.overall_score ??
+      d.final_score ??
+      0,
+
+    verdict:
+      d.verdict ??
+      "Unknown",
+
+    summary:
+      d.summary ??
+      d.assessment ??
+      "No assessment available.",
+
+    suggestions:
+      d.suggestions ??
+      []
+  };
+
   const criteria = [
-    { key: 'accuracy',     label: 'Accuracy' },
-    { key: 'clarity',      label: 'Clarity' },
+    { key: 'accuracy', label: 'Accuracy' },
+    { key: 'clarity', label: 'Clarity' },
     { key: 'completeness', label: 'Completeness' },
-    { key: 'reasoning',    label: 'Reasoning' }
+    { key: 'reasoning', label: 'Reasoning' }
   ];
 
   const barsHTML = criteria.map(c => `
     <div class="score-cell">
       <div class="score-name">${c.label}</div>
+
       <div class="score-row">
         <div class="bar-track">
-          <div class="bar-fill" style="width:${d[c.key]*10}%;background:${scoreColor(d[c.key])}"></div>
+          <div class="bar-fill"
+            style="
+              width:${normalizeScore(normalized[c.key]) * 10}%;
+              background:${scoreColor(normalized[c.key])}
+            ">
+          </div>
         </div>
-        <span class="score-val">${parseFloat(d[c.key]).toFixed(1)}</span>
-      </div>
-    </div>`).join('');
 
-  const suggestionsHTML = (d.suggestions || []).map((s, i) => `
-    <div class="suggestion">
-      <span class="suggestion-n">${i+1}.</span>
-      <span>${s}</span>
-    </div>`).join('');
+        <span class="score-val">
+          ${displayScore(normalized[c.key])}
+        </span>
+      </div>
+    </div>
+  `).join('');
+
+  const suggestionsHTML =
+    normalized.suggestions.length
+      ? normalized.suggestions.map((s, i) => `
+          <div class="suggestion">
+            <span class="suggestion-n">${i + 1}.</span>
+            <span>${s}</span>
+          </div>
+        `).join('')
+      : `
+          <div class="suggestion">
+            <span>No suggestions available.</span>
+          </div>
+        `;
 
   document.getElementById('resultCard').innerHTML = `
     <div class="result-card">
+
       <div class="result-header">
         <div>
-          <div class="overall-score" style="color:${scoreColor(d.overall)}">${parseFloat(d.overall).toFixed(1)}<span style="font-size:14px;color:var(--muted);font-weight:300"> / 10</span></div>
-          <div class="overall-label">overall score</div>
+          <div class="overall-score"
+               style="color:${scoreColor(normalized.overall)}">
+
+            ${displayScore(normalized.overall)}
+
+            <span style="
+              font-size:14px;
+              color:var(--muted);
+              font-weight:300">
+              / 10
+            </span>
+          </div>
+
+          <div class="overall-label">
+            overall score
+          </div>
         </div>
-        <span class="verdict-chip verdict-${d.verdict}">${d.verdict}</span>
+
+        <span class="verdict-chip verdict-${normalized.verdict}">
+          ${normalized.verdict}
+        </span>
       </div>
-      <div class="scores-grid">${barsHTML}</div>
+
+      <div class="scores-grid">
+        ${barsHTML}
+      </div>
+
       <div class="result-section">
         <div class="section-label">Assessment</div>
-        <div class="section-text">${d.summary}</div>
+        <div class="section-text">${normalized.summary}</div>
       </div>
+
       <div class="result-section">
         <div class="section-label">Suggestions</div>
         ${suggestionsHTML}
       </div>
-    </div>`;
+
+    </div>
+  `;
+
   document.getElementById('resultCard').style.display = 'block';
 }
 
@@ -627,40 +780,95 @@ async function loadHistory() {
   try {
     const res = await fetch(`${API}/history`);
     const data = await res.json();
+
     const list = document.getElementById('historyList');
 
-    if (!data.evaluations.length) {
+    if (!data.evaluations || !data.evaluations.length) {
       list.innerHTML = '<div class="empty">no evaluations yet</div>';
       return;
     }
 
-    list.innerHTML = '<div class="history-list">' +
+    list.innerHTML =
+      '<div class="history-list">' +
+
       data.evaluations.map(e => `
         <div class="history-item">
+
           <div class="history-item-top">
-            <div class="history-q">${e.question}</div>
+
+            <div class="history-q">
+              ${e.question || "No question"}
+            </div>
+
             <div class="history-meta">
-              <span class="verdict-chip verdict-${e.verdict}" style="font-size:10px;padding:3px 8px">${e.verdict}</span>
-              <div style="margin-top:5px">${e.timestamp}</div>
-              <div style="color:var(--muted)">${e.domain}</div>
+
+              <span class="verdict-chip verdict-${e.verdict}"
+                    style="font-size:10px;padding:3px 8px">
+
+                ${e.verdict || "Unknown"}
+
+              </span>
+
+              <div style="margin-top:5px">
+                ${e.timestamp || ""}
+              </div>
+
+              <div style="color:var(--muted)">
+                ${e.domain || ""}
+              </div>
+
             </div>
           </div>
+
           <div class="history-scores">
-            <span class="mini-score">accuracy <span>${e.accuracy}</span></span>
-            <span class="mini-score">clarity <span>${e.clarity}</span></span>
-            <span class="mini-score">completeness <span>${e.completeness}</span></span>
-            <span class="mini-score">reasoning <span>${e.reasoning}</span></span>
-            <span class="mini-score">overall <span style="color:${scoreColor(e.overall)}">${e.overall}</span></span>
+
+            <span class="mini-score">
+              accuracy
+              <span>${displayScore(e.accuracy)}</span>
+            </span>
+
+            <span class="mini-score">
+              clarity
+              <span>${displayScore(e.clarity)}</span>
+            </span>
+
+            <span class="mini-score">
+              completeness
+              <span>${displayScore(e.completeness)}</span>
+            </span>
+
+            <span class="mini-score">
+              reasoning
+              <span>${displayScore(e.reasoning)}</span>
+            </span>
+
+            <span class="mini-score">
+              overall
+              <span style="color:${scoreColor(e.overall)}">
+                ${displayScore(e.overall)}
+              </span>
+            </span>
+
           </div>
-        </div>`).join('') + '</div>';
+        </div>
+      `).join('')
+
+      + '</div>';
+
   } catch {
-    document.getElementById('historyList').innerHTML = '<div class="empty">could not load — is the server running?</div>';
+    document.getElementById('historyList').innerHTML =
+      '<div class="empty">could not load — is the server running?</div>';
   }
 }
 
+// ── CLEAR HISTORY ─────────────────────────────────────────────
 async function clearHistory() {
   if (!confirm('Clear all evaluation history?')) return;
-  await fetch(`${API}/history/clear`, { method: 'DELETE' });
+
+  await fetch(`${API}/history/clear`, {
+    method: 'DELETE'
+  });
+
   loadHistory();
 }
 
@@ -671,78 +879,131 @@ async function loadStats() {
     const d = await res.json();
 
     if (!d.total_evaluations) {
-      document.getElementById('statsContent').innerHTML = '<div class="empty">run some evaluations first</div>';
+      document.getElementById('statsContent').innerHTML =
+        '<div class="empty">run some evaluations first</div>';
       return;
     }
 
     const avg = d.average_scores;
+
     const verdictRows = Object.entries(d.verdicts_breakdown || {})
       .sort((a,b) => b[1]-a[1])
-      .map(([v,c]) => `<div class="panel-row"><span>${v}</span><span class="panel-row-val">${c}</span></div>`).join('');
+      .map(([v,c]) => `
+        <div class="panel-row">
+          <span>${v}</span>
+          <span class="panel-row-val">${c}</span>
+        </div>
+      `).join('');
 
     const domainRows = Object.entries(d.domains_breakdown || {})
-      .map(([dom,c]) => `<div class="panel-row"><span>${dom}</span><span class="panel-row-val">${c}</span></div>`).join('');
+      .map(([dom,c]) => `
+        <div class="panel-row">
+          <span>${dom}</span>
+          <span class="panel-row-val">${c}</span>
+        </div>
+      `).join('');
 
     const avgRows = [
-      ['Accuracy',     avg.accuracy],
-      ['Clarity',      avg.clarity],
+      ['Accuracy', avg.accuracy],
+      ['Clarity', avg.clarity],
       ['Completeness', avg.completeness],
-      ['Reasoning',    avg.reasoning],
+      ['Reasoning', avg.reasoning],
     ].map(([label, val]) => `
       <div class="panel-row">
+
         <span>${label}</span>
-        <div style="display:flex;align-items:center;gap:10px;flex:1;margin-left:1rem">
+
+        <div style="
+          display:flex;
+          align-items:center;
+          gap:10px;
+          flex:1;
+          margin-left:1rem">
+
           <div class="bar-track" style="flex:1">
-            <div class="bar-fill" style="width:${val*10}%;background:${scoreColor(val)}"></div>
+
+            <div class="bar-fill"
+                 style="
+                  width:${normalizeScore(val)*10}%;
+                  background:${scoreColor(val)}
+                 ">
+            </div>
+
           </div>
-          <span class="panel-row-val">${val}</span>
+
+          <span class="panel-row-val">
+            ${displayScore(val)}
+          </span>
+
         </div>
-      </div>`).join('');
+
+      </div>
+    `).join('');
 
     document.getElementById('statsContent').innerHTML = `
       <div class="stats-grid">
+
         <div class="stat-box">
           <div class="stat-label">total runs</div>
           <div class="stat-val">${d.total_evaluations}</div>
         </div>
+
         <div class="stat-box">
           <div class="stat-label">avg overall</div>
-          <div class="stat-val">${avg.overall}</div>
+          <div class="stat-val">${displayScore(avg.overall)}</div>
         </div>
+
         <div class="stat-box">
           <div class="stat-label">highest</div>
-          <div class="stat-val">${d.highest_score}</div>
+          <div class="stat-val">${displayScore(d.highest_score)}</div>
         </div>
+
         <div class="stat-box">
           <div class="stat-label">lowest</div>
-          <div class="stat-val" style="color:var(--poor)">${d.lowest_score}</div>
+          <div class="stat-val" style="color:var(--poor)">
+            ${displayScore(d.lowest_score)}
+          </div>
         </div>
+
       </div>
 
       <div class="two-col">
+
         <div class="panel">
           <div class="panel-header">avg by criterion</div>
           ${avgRows}
         </div>
+
         <div>
+
           <div class="panel" style="margin-bottom:1rem">
             <div class="panel-header">by verdict</div>
             ${verdictRows || '<div class="empty" style="padding:1rem">no data</div>'}
           </div>
+
           <div class="panel">
             <div class="panel-header">by domain</div>
             ${domainRows || '<div class="empty" style="padding:1rem">no data</div>'}
           </div>
+
         </div>
-      </div>`;
+      </div>
+    `;
+
   } catch {
-    document.getElementById('statsContent').innerHTML = '<div class="empty">could not load stats</div>';
+    document.getElementById('statsContent').innerHTML =
+      '<div class="empty">could not load stats</div>';
   }
 }
 
+// ── ERROR ─────────────────────────────────────────────────────
 function showError(id, msg) {
   const el = document.getElementById(id);
-  el.innerHTML = `<div class="error-msg">${msg}</div>`;
+
+  el.innerHTML = `
+    <div class="error-msg">${msg}</div>
+  `;
+
   el.style.display = 'block';
 }
 </script>

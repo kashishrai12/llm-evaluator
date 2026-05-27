@@ -1,0 +1,349 @@
+{
+  "total": 40,
+  "correct": 32,
+  "agreement_rate": 80.0,
+  "per_domain": {
+    "Mathematics": {
+      "correct": 7,
+      "total": 8
+    },
+    "Physics": {
+      "correct": 5,
+      "total": 8
+    },
+    "Coding": {
+      "correct": 8,
+      "total": 8
+    },
+    "Finance": {
+      "correct": 6,
+      "total": 8
+    },
+    "Biology": {
+      "correct": 6,
+      "total": 8
+    }
+  },
+  "details": [
+    {
+      "id": 1,
+      "domain": "Mathematics",
+      "expected": "Excellent",
+      "predicted": "Excellent",
+      "match": true,
+      "overall_score": 8.8
+    },
+    {
+      "id": 2,
+      "domain": "Mathematics",
+      "expected": "Good",
+      "predicted": "Good",
+      "match": true,
+      "overall_score": 8.0
+    },
+    {
+      "id": 3,
+      "domain": "Mathematics",
+      "expected": "Fair",
+      "predicted": "Fair",
+      "match": true,
+      "overall_score": 6.2
+    },
+    {
+      "id": 4,
+      "domain": "Mathematics",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 3.2
+    },
+    {
+      "id": 5,
+      "domain": "Mathematics",
+      "expected": "Excellent",
+      "predicted": "Excellent",
+      "match": true,
+      "overall_score": 8.7
+    },
+    {
+      "id": 6,
+      "domain": "Mathematics",
+      "expected": "Fair",
+      "predicted": "Good",
+      "match": false,
+      "overall_score": 7.6
+    },
+    {
+      "id": 7,
+      "domain": "Mathematics",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 3.2
+    },
+    {
+      "id": 8,
+      "domain": "Mathematics",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 2.2
+    },
+    {
+      "id": 9,
+      "domain": "Physics",
+      "expected": "Excellent",
+      "predicted": "Excellent",
+      "match": true,
+      "overall_score": 8.7
+    },
+    {
+      "id": 10,
+      "domain": "Physics",
+      "expected": "Good",
+      "predicted": "Fair",
+      "match": false,
+      "overall_score": 6.2
+    },
+    {
+      "id": 11,
+      "domain": "Physics",
+      "expected": "Fair",
+      "predicted": "Fair",
+      "match": true,
+      "overall_score": 6.6
+    },
+    {
+      "id": 12,
+      "domain": "Physics",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 2.2
+    },
+    {
+      "id": 13,
+      "domain": "Physics",
+      "expected": "Excellent",
+      "predicted": "Excellent",
+      "match": true,
+      "overall_score": 9.1
+    },
+    {
+      "id": 14,
+      "domain": "Physics",
+      "expected": "Fair",
+      "predicted": "Good",
+      "match": false,
+      "overall_score": 7.6
+    },
+    {
+      "id": 15,
+      "domain": "Physics",
+      "expected": "Fair",
+      "predicted": "Poor",
+      "match": false,
+      "overall_score": 4.2
+    },
+    {
+      "id": 16,
+      "domain": "Physics",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 2.8
+    },
+    {
+      "id": 17,
+      "domain": "Coding",
+      "expected": "Excellent",
+      "predicted": "Excellent",
+      "match": true,
+      "overall_score": 8.8
+    },
+    {
+      "id": 18,
+      "domain": "Coding",
+      "expected": "Good",
+      "predicted": "Good",
+      "match": true,
+      "overall_score": 7.3
+    },
+    {
+      "id": 19,
+      "domain": "Coding",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 3.8
+    },
+    {
+      "id": 20,
+      "domain": "Coding",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 3.2
+    },
+    {
+      "id": 21,
+      "domain": "Coding",
+      "expected": "Excellent",
+      "predicted": "Excellent",
+      "match": true,
+      "overall_score": 8.7
+    },
+    {
+      "id": 22,
+      "domain": "Coding",
+      "expected": "Good",
+      "predicted": "Good",
+      "match": true,
+      "overall_score": 7.2
+    },
+    {
+      "id": 23,
+      "domain": "Coding",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 3.2
+    },
+    {
+      "id": 24,
+      "domain": "Coding",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 4.8
+    },
+    {
+      "id": 25,
+      "domain": "Finance",
+      "expected": "Excellent",
+      "predicted": "Good",
+      "match": false,
+      "overall_score": 8.4
+    },
+    {
+      "id": 26,
+      "domain": "Finance",
+      "expected": "Fair",
+      "predicted": "Fair",
+      "match": true,
+      "overall_score": 6.0
+    },
+    {
+      "id": 27,
+      "domain": "Finance",
+      "expected": "Good",
+      "predicted": "Good",
+      "match": true,
+      "overall_score": 7.9
+    },
+    {
+      "id": 28,
+      "domain": "Finance",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 3.2
+    },
+    {
+      "id": 29,
+      "domain": "Finance",
+      "expected": "Excellent",
+      "predicted": "Excellent",
+      "match": true,
+      "overall_score": 8.5
+    },
+    {
+      "id": 30,
+      "domain": "Finance",
+      "expected": "Good",
+      "predicted": "Fair",
+      "match": false,
+      "overall_score": 6.2
+    },
+    {
+      "id": 31,
+      "domain": "Finance",
+      "expected": "Fair",
+      "predicted": "Fair",
+      "match": true,
+      "overall_score": 6.7
+    },
+    {
+      "id": 32,
+      "domain": "Finance",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 3.2
+    },
+    {
+      "id": 33,
+      "domain": "Biology",
+      "expected": "Excellent",
+      "predicted": "Good",
+      "match": false,
+      "overall_score": 8.3
+    },
+    {
+      "id": 34,
+      "domain": "Biology",
+      "expected": "Good",
+      "predicted": "Good",
+      "match": true,
+      "overall_score": 7.3
+    },
+    {
+      "id": 35,
+      "domain": "Biology",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 4.2
+    },
+    {
+      "id": 36,
+      "domain": "Biology",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 4.2
+    },
+    {
+      "id": 37,
+      "domain": "Biology",
+      "expected": "Excellent",
+      "predicted": "Excellent",
+      "match": true,
+      "overall_score": 8.8
+    },
+    {
+      "id": 38,
+      "domain": "Biology",
+      "expected": "Poor",
+      "predicted": "Fair",
+      "match": false,
+      "overall_score": 6.3
+    },
+    {
+      "id": 39,
+      "domain": "Biology",
+      "expected": "Fair",
+      "predicted": "Fair",
+      "match": true,
+      "overall_score": 6.7
+    },
+    {
+      "id": 40,
+      "domain": "Biology",
+      "expected": "Poor",
+      "predicted": "Poor",
+      "match": true,
+      "overall_score": 2.4
+    }
+  ]
+}
