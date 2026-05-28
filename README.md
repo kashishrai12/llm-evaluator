@@ -1,6 +1,6 @@
 # LLM Response Evaluator
 
-A dual-evaluator REST API that evaluates the quality of AI-generated answers using an **LLM-as-judge** approach. Built with FastAPI and Groq. Supports two evaluation modes — general quality scoring and hallucination detection — through a single unified interface.
+A dual-evaluator REST API that evaluates the quality of AI-generated answers using an **LLM-as-judge** approach. Built with FastAPI and Groq. Supports two evaluation modes — general quality scoring and hallucination detection, through a single unified interface.
 
 ## What it does
 
