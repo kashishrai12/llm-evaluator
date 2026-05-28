@@ -25,14 +25,13 @@ Scoring rubric (0-10):
 - relevance:     how well the answer addresses the question
 - reasoning:     logical consistency and evidence-based reasoning
 
+
 Important:
-- Penalize confident misinformation heavily
-- Penalize fabricated facts heavily
-- High fluency does NOT mean high factuality
-- A polished wrong answer should score poorly
-- If the answer contains ANY fabricated claim, factuality must be <= 4
-- If the answer contradicts well-established facts, hallucination must be <= 3
-- Never score an incorrect answer above 5.0 overall
+- A factually WRONG answer must score factuality <= 3, hallucination <= 3
+- If the answer states something false as fact, overall MUST be below 5.0
+- Do not reward fluency or confidence in wrong answers
+- Score based on correctness ONLY — style and length do not matter
+- When in doubt whether an answer is wrong, assume it is wrong
 
 Return ONLY these 4 scores plus summary and suggestions.
 Do NOT compute overall or verdict.
@@ -56,11 +55,11 @@ def normalize(raw: dict) -> dict:
         2
     )
 
-    if overall >= 7.0:
+    if overall >= 8.0:      
         verdict = "Excellent"
-    elif overall >= 5.0:
+    elif overall >= 6.0:
         verdict = "Good"
-    elif overall >= 3.0:
+    elif overall >= 4.0:
         verdict = "Fair"
     else:
         verdict = "Poor"
