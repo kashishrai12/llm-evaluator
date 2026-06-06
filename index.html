@@ -516,9 +516,7 @@
 
 <script>
 const API =
-  window.location.port === "8001"
-    ? "http://localhost:8001"
-    : "http://localhost:8000";
+  window.location.origin;
 
 // ── STATUS CHECK ──────────────────────────────────────────────
 async function checkStatus() {
